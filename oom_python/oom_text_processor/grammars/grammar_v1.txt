@@ -1,0 +1,41 @@
+sentence -> descriptive | possessive | behavioral
+
+descriptive -> subject sealed | subject abstract | private subject | subject sealed | subject inheritance object
+possessive -> owner possessive_verb owned
+behavioral -> owner behavioral_verb behavior
+
+owner -> subject | limited_possession subject
+owned -> object | numeral_indicator object
+
+behavior -> object | object involved_objects
+involved_objects -> involved_indicator object_enumeration
+object_enumeration -> object | object enumeration_indicator object_enumeration
+
+sealed -> have no heir
+abstract -> be abstract
+private -> not everyone know
+inheritance -> be a
+
+possessive_verb -> "have"
+limited_possession -> "only"
+numeral_indicator -> "a" | "many"
+
+behavioral_verb -> "can" | "should" | "do" | "may"
+involved_indicator -> "with"
+enumeration_indicator -> "and"
+
+subject -> "NN" | "NNS" | "NNP" | "NNPS"
+object -> "JJ" | "NN" | "VB" | "MD"
+
+have -> "have"
+no -> "no"
+heir -> "heir"
+
+be -> "be"
+abstract -> "abstract"
+
+not -> "not"
+everyone -> "everyone"
+know -> "know"
+
+a -> "a"
