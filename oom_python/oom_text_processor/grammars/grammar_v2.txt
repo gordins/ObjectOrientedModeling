@@ -1,0 +1,13 @@
+sentence -> descriptive_sentence | possessive_sentence | behavioral_sentence
+
+descriptive_sentence -> entity_description | possessed_description | behavior_description
+
+entity_description -> entity sealed | entity abstract | private entity | entity inheritance parent_entity
+
+sealed -> possessive_indicator negation_indicator
+abstract -> "be" "abstract"
+private -> "no" "one" "know"
+negation -> "no" | "not"
+possessive_verb -> "have"
+
+negation_indicator -> "no" | "not"

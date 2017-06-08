@@ -1,0 +1,13 @@
+{
+    "languages": {
+        "java": "http://localhost:4000/codeGenerator/java",
+        "csharp": "http://localhost:4000/codeGenerator/csharp",
+        "c#": "http://localhost:4000/codeGenerator/csharp",
+        "dotnet": "http://localhost:4000/codeGenerator/csharp"
+    },
+    "text_processor_uri": "http://localhost:3000/textProcessor",
+    "required_fields": [
+        "text",
+        "language"
+    ]
+}
