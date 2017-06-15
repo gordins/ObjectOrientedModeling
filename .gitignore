@@ -1,8 +1,8 @@
-/oom_python/.idea/
-/oom_csharp/.vs/
-/oom_csharp/CodeGenerator/bin/
-/oom_csharp/CodeGenerator/obj/
-/oom_csharp/Model/bin/
-/oom_csharp/Model/obj/
-/oom_csharp/Services/bin/
-/oom_csharp/Services/obj/
+oom_python/.idea/
+oom_csharp/.vs/
+oom_csharp/CodeGenerator/bin/
+oom_csharp/CodeGenerator/obj/
+oom_csharp/Model/bin/
+oom_csharp/Model/obj/
+oom_csharp/Services/bin/
+oom_csharp/Services/obj/
