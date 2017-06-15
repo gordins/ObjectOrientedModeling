@@ -3,12 +3,12 @@ import nltk
 import re
 
 # here is defined the default grammar
-V1_GRAMMAR_PATH = 'grammars\grammar_v1.txt'
+V1_GRAMMAR_PATH = 'grammars/grammar_v1.txt'
 # the more detailed/expressive grammar
-V2_GRAMMAR_PATH = 'grammars\grammar_v2.txt'
+V2_GRAMMAR_PATH = 'grammars/grammar_v2.txt'
 
 # selecting the file
-grammar_picker = 1
+grammar_picker = 2
 if grammar_picker == 1:
     GRAMMAR_PATH = V1_GRAMMAR_PATH
 else:

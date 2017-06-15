@@ -18,8 +18,7 @@ def text_preprocessor_handler():
         print(exception)
         response.status = 400
         return 'The text to process can not be processed (Tokenizer).'
-    print(processed_text)
-    # return {'processed_text': processed_text}
+    return {'processed_text': processed_text}
     try:
         processor_response = requests.post('text_processor_uri', json=processed_text)
         response.status = processor_response.status_code

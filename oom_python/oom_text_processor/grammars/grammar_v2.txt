@@ -1,13 +1,53 @@
-sentence -> descriptive_sentence | possessive_sentence | behavioral_sentence
+sentence -> descriptive | possessive | behavioral | singleton
 
-descriptive_sentence -> entity_description | possessed_description | behavior_description
+descriptive -> protected entity | entity sealed | entity abstract | entity desc_verb numeral_indicator inherited_entity
+inherited_entity -> entity
 
-entity_description -> entity sealed | entity abstract | private entity | entity inheritance parent_entity
+possessive -> defining_possessed | possessed_limitation | possessed_description
 
-sealed -> possessive_indicator negation_indicator
-abstract -> "be" "abstract"
-private -> "no" "one" "know"
-negation -> "no" | "not"
-possessive_verb -> "have"
+defining_possessed -> entity pos_verb possessed | private_indicator entity pos_verb possessed
+
+possessed_limitation -> limited_indicator entity pos_indicator possessed
+limited_indicator -> private | protected
+
+possessed_description -> entity pos_indicator possessed desc_verb description_type
+description_type -> entity | numeral_indicator entity | constant | static
+
+possessed -> pos_object | numeral_indicator pos_object
+
+behavioral -> entity behav_verb behavior | private_indicator entity behav_verb behavior
+behavior -> behav_object | behav_object involved_indicator parameter_enumeration
+parameter_enumeration -> parameter | parameter enumeration_indicator parameter_enumeration
+parameter -> entity | numeral_indicator entity
+
+singleton -> there_keyword desc_verb private_indicator one_keyword entity
+
+protected -> negation_indicator everyone_keyword ack_verb
+private -> negation_indicator one_keyword ack_verb
+sealed -> pos_verb negation_indicator heir_keyword
+abstract -> desc_verb abstract_keyword
+constant -> "unchangeable"
+static -> "shareable"
+
+private_indicator -> "only"
+pos_indicator -> "POS"
+involved_indicator -> "with"
+enumeration_indicator -> "and"
+numeral_indicator -> "a" | "many"
 
 negation_indicator -> "no" | "not"
+
+desc_verb -> "be"
+pos_verb -> "have"
+behav_verb -> "can" | "should" | "be" | "may"
+ack_verb -> "know"
+
+entity -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ"
+pos_object -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ"
+behav_object -> "VB"
+
+everyone_keyword -> "everyone"
+one_keyword -> "one"
+abstract_keyword -> "abstract"
+heir_keyword -> "heir"
+there_keyword -> "there"

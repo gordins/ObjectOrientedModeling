@@ -6,7 +6,7 @@ from string import punctuation
 from oom_text_processor.grammar import grammar_parser, grammar_keywords
 
 lemmatizer = WordNetLemmatizer()
-punctuation_translator = str.maketrans('', '', punctuation)
+punctuation_translator = str.maketrans('', '', punctuation.replace('\'', ''))
 lemmatized = []
 
 pos_list = ['C', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNS', 'NNP', 'NNPS', 'PDT', 'POS',
@@ -15,7 +15,6 @@ pos_list = ['C', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', '
 
 
 def text_to_sent_tokenized(text):
-    text.replace(' the ', ' ')
     return sent_tokenizer(text)
 
 
