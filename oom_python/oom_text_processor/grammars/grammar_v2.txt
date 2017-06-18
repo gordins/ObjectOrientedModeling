@@ -39,15 +39,16 @@ negation_indicator -> "no" | "not"
 
 desc_verb -> "be"
 pos_verb -> "have"
-behav_verb -> "can" | "should" | "be" | "may"
+behav_verb -> "can" | "should" | "do" | "may"
 ack_verb -> "know"
 
-entity -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ"
-pos_object -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ"
-behav_object -> "VB"
+entity -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ" | "JJR" | "JJS" | "FW" | "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ"
+pos_object -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ" | "JJR" | "JJS" | "FW" | "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ"
+behav_object -> "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ" | "FW"
 
 everyone_keyword -> "everyone"
 one_keyword -> "one"
 abstract_keyword -> "abstract"
 heir_keyword -> "heir"
 there_keyword -> "there"
+

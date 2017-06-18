@@ -2,7 +2,8 @@
 
 from oom_text_processor.tools import \
     text_to_sent_tokenized, sent_tokenized_to_no_punctuation, no_punctuation_to_word_tokenized, \
-    word_tokenized_to_lemmatized_pos_terminals, lemmatized_pos_terminals_to_processed_text
+    word_tokenized_to_lemmatized_pos_terminals, lemmatized_pos_terminals_to_processed_text, \
+    processed_text_to_schema, trim_schema
 
 
 def process(text):
@@ -25,6 +26,11 @@ def process(text):
     # lemmatizing and part-of-speech recognition, combined together
     # because part-of-speech is altered by lemmatizing
     lemmatized_pos_terminals = word_tokenized_to_lemmatized_pos_terminals(word_tokenized)
-    # finally, parsing the pre-processed text and converted into grammar-tagged json
+    # parsing the pre-processed text and converted into grammar-tagged json
     processed_text = lemmatized_pos_terminals_to_processed_text(lemmatized_pos_terminals)
-    return processed_text
+    # converting into grammar-tagged json
+    schema = processed_text_to_schema(processed_text)
+    # trim the schema of unused entities and capitalize the first letters of a entity
+    trimmed_schema = trim_schema(schema)
+    # return schema
+    return trimmed_schema

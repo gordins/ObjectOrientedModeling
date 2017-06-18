@@ -41,7 +41,8 @@ def modeling_handler():
         if processor_response.status_code != 200:
             response.status = processor_response.status_code
             return processor_response.text
-
+    print(processor_response.json())
+    print(server_utilities['languages'][received_language])
     try:
         generator_response = requests.post(server_utilities['languages'][received_language],
                                            json=processor_response.json())

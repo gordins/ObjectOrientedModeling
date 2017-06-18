@@ -4,6 +4,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 from string import punctuation
 from oom_text_processor.grammar import grammar_parser, grammar_keywords
+from oom_text_processor.schema_convertor.convertor import convert_processed_text
 
 lemmatizer = WordNetLemmatizer()
 punctuation_translator = str.maketrans('', '', punctuation.replace('\'', ''))
@@ -12,6 +13,16 @@ lemmatized = []
 pos_list = ['C', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNS', 'NNP', 'NNPS', 'PDT', 'POS',
             'PRP', 'PRPS', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'WDT',
             'WP', 'WPS', 'WRB']
+
+keywords = {"abstract", "as", "assert", "base", "bool", "boolean", "break", "byte", "case", "catch", "char", "checked",
+            "class", "const", "continue", "decimal", "default", "delegate", "do", "double", "else", "enum", "event",
+            "explicit", "extends", "extern", "false", "final", "finally", "fixed", "float", "for", "foreach", "goto",
+            "if", "implements", "implicit", "import", "in", "instanceof", "int", "interface", "internal", "is", "lock",
+            "long", "namespace", "native", "new", "null", "object", "operator", "out", "override", "package", "params",
+            "private", "protected", "public", "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof",
+            "stackalloc", "static", "strictfp", "string", "struct", "super", "switch", "synchronized", "this", "throw",
+            "throws", "transient", "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using",
+            "virtual", "void", "volatile", "while"}
 
 
 def text_to_sent_tokenized(text):
@@ -85,3 +96,53 @@ def lemmatized_pos_terminals_to_processed_text(lemmatized_pos_terminals):
         processed, last_index = tree_to_dict(processed_sentence_tree, i)
         processed_text.append(processed['sentence'])
     return processed_text
+
+
+def processed_text_to_schema(processed_text):
+    entities = convert_processed_text(processed_text)
+    valid_entities = []
+    for entity in entities:
+        if entity["name"] not in keywords:
+            valid_entities.append(entity)
+    return valid_entities
+
+
+def trim_schema(schema):
+    entity_counts = {}
+    for i in range(0, len(schema)):
+        schema[i]["name"] = schema[i]["name"].capitalize()
+        entity_counts[schema[i]["name"]] = 0
+    for i in range(0, len(schema)):
+        if "inherits" in schema[i]:
+            schema[i]["inherits"] = schema[i]["inherits"].capitalize()
+            entity_counts[schema[i]["inherits"]] += 1
+        if "variables" in schema[i]:
+            for j in range(0, len(schema[i]["variables"])):
+                schema[i]["variables"][j]["type"] = schema[i]["variables"][j]["type"].capitalize()
+                if schema[i]["variables"][j]["type"] in entity_counts:
+                    entity_counts[schema[i]["variables"][j]["type"]] += 1
+                else:
+                    schema[i]["variables"][j]["type"] = schema[i]["variables"][j]["type"].lower()
+        if "methods" in schema[i]:
+            for j in range(0, len(schema[i]["methods"])):
+                if "returnType" in schema[i]["methods"][j]:
+                    schema[i]["methods"][j]["returnType"] = schema[i]["methods"][j]["returnType"].capitalize()
+                    if schema[i]["methods"][j]["returnType"] in entity_counts:
+                        entity_counts[schema[i]["methods"][j]["returnType"]] += 1
+                    else:
+                        schema[i]["methods"][j]["returnType"] = schema[i]["methods"][j]["returnType"].lower()
+                if "parameters" not in schema[i]["methods"][j]:
+                    continue
+                for k in range(0, len(schema[i]["methods"][j]["parameters"])):
+                    schema[i]["methods"][j]["parameters"][k]["type"] = \
+                        schema[i]["methods"][j]["parameters"][k]["type"].capitalize()
+                    if schema[i]["methods"][j]["parameters"][k]["type"] in entity_counts:
+                        entity_counts[schema[i]["methods"][j]["parameters"][k]["type"]] += 1
+                    else:
+                        schema[i]["methods"][j]["parameters"][k]["type"] = \
+                            schema[i]["methods"][j]["parameters"][k]["type"].lower()
+    trimmed_schema = []
+    for entity in schema:
+        if entity_counts[entity["name"]] != 0 and entity != ["name"]:
+            trimmed_schema.append(entity)
+    return trimmed_schema
