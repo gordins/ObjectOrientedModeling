@@ -33,7 +33,7 @@ private_indicator -> "only"
 pos_indicator -> "POS"
 involved_indicator -> "with"
 enumeration_indicator -> "and"
-numeral_indicator -> "a" | "many"
+numeral_indicator -> "a" | "an" | "many"
 
 negation_indicator -> "no" | "not"
 
@@ -42,8 +42,8 @@ pos_verb -> "have"
 behav_verb -> "can" | "should" | "do" | "may"
 ack_verb -> "know"
 
-entity -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ" | "JJR" | "JJS" | "FW" | "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ"
-pos_object -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ" | "JJR" | "JJS" | "FW" | "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ"
+entity -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ" | "JJR" | "JJS" | "FW" | "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ" | "DT"
+pos_object -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ" | "JJR" | "JJS" | "FW" | "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ" | "DT"
 behav_object -> "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ" | "FW"
 
 everyone_keyword -> "everyone"

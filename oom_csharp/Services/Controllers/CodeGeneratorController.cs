@@ -40,7 +40,6 @@ namespace Services.Controllers
             {
                 return BadRequest(e.ToString());
             }
-
             validator = new SemanticValidator();
             try
             {

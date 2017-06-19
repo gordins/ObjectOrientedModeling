@@ -43,6 +43,20 @@ def no_punctuation_to_word_tokenized(no_punctuation):
     return word_tokenized
 
 
+def word_tokenized_to_word_tokenized_lower_cased(word_tokenized):
+    word_tokenized_lower_cased = []
+    original_words = []
+    for sentence in word_tokenized:
+        sentence_lower_cased = []
+        for word in sentence:
+            if word.lower() not in grammar_keywords:
+                original_words.append(word)
+            sentence_lower_cased.append(word.lower())
+
+        word_tokenized_lower_cased.append(sentence_lower_cased)
+    return word_tokenized_lower_cased, original_words
+
+
 def pos_to_wordnet(pos):
     if pos.startswith('J'):
         return wordnet.ADJ
@@ -53,12 +67,12 @@ def pos_to_wordnet(pos):
     return wordnet.NOUN
 
 
-def word_tokenized_to_lemmatized_pos_terminals(word_tokenized):
+def word_tokenized_lower_cased_to_lemmatized_pos_terminals(word_tokenized_lower_cased):
     lemmatized_pos_terminals = []
     global lemmatized
     # the lemmatized are saved because the meaning of the word must be substituted back after grammar parsing
     lemmatized = []
-    for word_tokenized_sent in word_tokenized:
+    for word_tokenized_sent in word_tokenized_lower_cased:
         lemmatized_pos_terminals_sent = []
         lemmatized_sent = []
         pos_sent = pos_tag(word_tokenized_sent)
@@ -66,7 +80,7 @@ def word_tokenized_to_lemmatized_pos_terminals(word_tokenized):
             lemmatized_word = lemmatizer.lemmatize(word_pos[0], pos_to_wordnet(word_pos[1]))
             lemmatized_sent.append(lemmatized_word)
             if lemmatized_word in grammar_keywords:
-                lemmatized_pos_terminals_sent.append(lemmatized_word)
+                lemmatized_pos_terminals_sent.append(lemmatized_word.lower())
             else:
                 lemmatized_pos_terminals_sent.append(word_pos[1])
         lemmatized.append(lemmatized_sent)
@@ -107,42 +121,49 @@ def processed_text_to_schema(processed_text):
     return valid_entities
 
 
-def trim_schema(schema):
+def trim_schema(schema, original_words):
     entity_counts = {}
     for i in range(0, len(schema)):
-        schema[i]["name"] = schema[i]["name"].capitalize()
+        schema[i]["name"] = find_actual_name(schema[i]["name"], original_words)
         entity_counts[schema[i]["name"]] = 0
     for i in range(0, len(schema)):
         if "inherits" in schema[i]:
-            schema[i]["inherits"] = schema[i]["inherits"].capitalize()
-            entity_counts[schema[i]["inherits"]] += 1
+            original_name = find_actual_name(schema[i]["inherits"], original_words)
+            schema[i]["inherits"] = original_name
+            entity_counts[original_name] += 1
+
         if "variables" in schema[i]:
             for j in range(0, len(schema[i]["variables"])):
-                schema[i]["variables"][j]["type"] = schema[i]["variables"][j]["type"].capitalize()
-                if schema[i]["variables"][j]["type"] in entity_counts:
-                    entity_counts[schema[i]["variables"][j]["type"]] += 1
-                else:
-                    schema[i]["variables"][j]["type"] = schema[i]["variables"][j]["type"].lower()
+                original_name = find_actual_name(schema[i]["variables"][j]["type"], original_words)
+                if original_name in entity_counts:
+                    schema[i]["variables"][j]["type"] = original_name
+                    entity_counts[original_name] += 1
         if "methods" in schema[i]:
             for j in range(0, len(schema[i]["methods"])):
                 if "returnType" in schema[i]["methods"][j]:
-                    schema[i]["methods"][j]["returnType"] = schema[i]["methods"][j]["returnType"].capitalize()
-                    if schema[i]["methods"][j]["returnType"] in entity_counts:
-                        entity_counts[schema[i]["methods"][j]["returnType"]] += 1
-                    else:
-                        schema[i]["methods"][j]["returnType"] = schema[i]["methods"][j]["returnType"].lower()
+                    original_name = find_actual_name(schema[i]["methods"][j]["returnType"], original_words)
+                    if original_name in entity_counts:
+                        entity_counts[original_name] += 1
+                        schema[i]["methods"][j]["returnType"] = original_name
                 if "parameters" not in schema[i]["methods"][j]:
                     continue
                 for k in range(0, len(schema[i]["methods"][j]["parameters"])):
-                    schema[i]["methods"][j]["parameters"][k]["type"] = \
-                        schema[i]["methods"][j]["parameters"][k]["type"].capitalize()
-                    if schema[i]["methods"][j]["parameters"][k]["type"] in entity_counts:
-                        entity_counts[schema[i]["methods"][j]["parameters"][k]["type"]] += 1
-                    else:
-                        schema[i]["methods"][j]["parameters"][k]["type"] = \
-                            schema[i]["methods"][j]["parameters"][k]["type"].lower()
+                    original_name = find_actual_name(schema[i]["methods"][j]["parameters"][k]["type"], original_words)
+                    if original_name in entity_counts:
+                        entity_counts[original_name] += 1
+                        schema[i]["methods"][j]["parameters"][k]["type"] = original_name
     trimmed_schema = []
     for entity in schema:
-        if entity_counts[entity["name"]] != 0 and entity != ["name"]:
-            trimmed_schema.append(entity)
+        if entity_counts[entity["name"]] == 0 and len(entity) <= 1:
+            continue
+        trimmed_schema.append(entity)
     return trimmed_schema
+
+
+def find_actual_name(name, original_words):
+    if name in keywords:
+        return name
+    for original_word in original_words:
+        if original_word.lower() == name:
+            return original_word[0].upper() + original_word[1:]
+    return name.capitalize()

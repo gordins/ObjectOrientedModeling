@@ -2,7 +2,6 @@ entities = []
 
 
 def convert_processed_text(processed_text):
-    print(processed_text)
     global entities
     entities = []
     for sentence in processed_text:
@@ -172,4 +171,3 @@ def add_parameter(entity_index, method_index, parameter_name):
         add_entity(parameter_name)
         return len(entities[entity_index]["methods"][method_index]["parameters"]) - 1
     return parameter_index
-

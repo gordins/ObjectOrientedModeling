@@ -19,7 +19,7 @@ def text_preprocessor_handler():
         print(exception)
         response.status = 400
         return 'The text to process can not be processed (Tokenizer).'
-    return json.dumps({"entities": processed_text})
+    return {"entities": processed_text}
 
 if __name__ == '__main__':
     run(host='localhost', port='3000')
