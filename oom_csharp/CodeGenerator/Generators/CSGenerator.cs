@@ -8,6 +8,9 @@ namespace CodeGenerator.Generators
         public override string GenerateEntity(Entity entity)
         {
             var generatedEntity = new StringBuilder();
+
+            generatedEntity.Append("using System;\nnamespace GeneratedCode\n{\n\t");
+
             if (!entity.AccessModifier.Equals(""))
                 generatedEntity.Append(entity.AccessModifier).Append(' ');
             if (entity.IsSealed)
@@ -17,28 +20,28 @@ namespace CodeGenerator.Generators
             generatedEntity.Append(entity.Type).Append(' ').Append(entity.Name);
             if (!entity.Inherits.Equals(""))
                 generatedEntity.Append(" : ").Append(entity.Inherits);
-            generatedEntity.Append("\n{");
+            generatedEntity.Append("\n\t{");
 
             //Variables
             foreach (var variable in entity.Variables)
-                generatedEntity.Append("\n\t").Append(GenerateVariable(variable)).Append(";");
+                generatedEntity.Append("\n\t\t").Append(GenerateVariable(variable)).Append(";");
             //Constructors
             foreach (var constructor in entity.Constructors)
-                generatedEntity.Append("\n\t")
+                generatedEntity.Append("\n\t\t")
                     .Append(GenerateConstructor(constructor, entity.Name))
-                    .Append("\n\t{\n\t}");
+                    .Append("\n\t\t{\n\t\t}");
             //Methods
             var isEntityInterface = entity.Type == "interface";
             foreach (var method in entity.Methods)
-                generatedEntity.Append("\n\t").Append(GenerateMethod(method, isEntityInterface));
+                generatedEntity.Append("\n\t\t").Append(GenerateMethod(method, isEntityInterface));
             //Enum values
             foreach (var enumerationElement in entity.Enumeration)
-                generatedEntity.Append("\n\t").Append(GenerateEnumValue(enumerationElement)).Append(",");
+                generatedEntity.Append("\n\t\t").Append(GenerateEnumValue(enumerationElement)).Append(",");
             if (entity.Enumeration.Count > 0)
                 generatedEntity.Length -= 1;
 
 
-            generatedEntity.Append("\n}");
+            generatedEntity.Append("\n\t}\n}\n");
             return generatedEntity.ToString();
         }
 
@@ -83,7 +86,7 @@ namespace CodeGenerator.Generators
             if (method.IsAbstract || isEntityInterface)
                 generatedMethod.Append(';');
             else
-                generatedMethod.Append("\n\t{\n\t\tthrow new NotImplementedException();\n\t}");
+                generatedMethod.Append("\n\t\t{\n\t\t\tthrow new NotImplementedException();\n\t\t}");
 
             return generatedMethod.ToString();
         }

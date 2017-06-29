@@ -11,20 +11,18 @@ namespace Services.Controllers
         [HttpPost("{language}")]
         public IActionResult GenerateCode(string language, [FromBody] ProcessedText processedText)
         {
+            if (language.Equals("json"))
+                return Ok(processedText);
             IGenerator generator;
-            switch (language)
+            try
             {
-                case "java":
-                    generator = new JavaGenerator();
-                    break;
-                case "csharp":
-                    generator = new CsGenerator();
-                    break;
-                case "json":
-                    return Ok(processedText);
-                default:
-                    return NotFound();
+                generator = GeneratorFactory.CreateGenerator(language);
             }
+            catch (LanguageNotSupportedException)
+            {
+                return NotFound();
+            }
+
 
             if (processedText?.Entities == null)
                 return BadRequest();
@@ -38,7 +36,7 @@ namespace Services.Controllers
             }
             catch (SyntaxFlawException e)
             {
-                return BadRequest(e.ToString());
+                return BadRequest(e.Message + "(" + e.Source + ")");
             }
             validator = new SemanticValidator();
             try
@@ -47,7 +45,7 @@ namespace Services.Controllers
             }
             catch (SemanticFlawException e)
             {
-                return BadRequest(e.ToString());
+                return BadRequest(e.Message + "(" + e.Source + ")");
             }
 
             return Ok(generator.GenerateProcessedText(processedText));

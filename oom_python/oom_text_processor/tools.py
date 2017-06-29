@@ -5,6 +5,7 @@ from nltk.corpus import wordnet
 from string import punctuation
 from oom_text_processor.grammar import grammar_parser, grammar_keywords
 from oom_text_processor.schema_convertor.convertor import convert_processed_text
+from oom_text_processor import exceptions
 
 lemmatizer = WordNetLemmatizer()
 punctuation_translator = str.maketrans('', '', punctuation.replace('\'', ''))
@@ -26,14 +27,22 @@ keywords = {"abstract", "as", "assert", "base", "bool", "boolean", "break", "byt
 
 
 def text_to_sent_tokenized(text):
-    return sent_tokenizer(text)
+    try:
+        return sent_tokenizer(text)
+    except Exception as e:
+        print(e)
+        raise exceptions.TokenizeException
 
 
 def sent_tokenized_to_no_punctuation(sent_tokenized):
-    no_punctuation = []
-    for sentence in sent_tokenized:
-        no_punctuation.append(sentence.translate(punctuation_translator))
-    return no_punctuation
+    try:
+        no_punctuation = []
+        for sentence in sent_tokenized:
+            no_punctuation.append(sentence.translate(punctuation_translator))
+        return no_punctuation
+    except Exception as e:
+        print(e)
+        raise exceptions.TokenizeException
 
 
 def no_punctuation_to_word_tokenized(no_punctuation):
@@ -68,24 +77,29 @@ def pos_to_wordnet(pos):
 
 
 def word_tokenized_lower_cased_to_lemmatized_pos_terminals(word_tokenized_lower_cased):
-    lemmatized_pos_terminals = []
-    global lemmatized
-    # the lemmatized are saved because the meaning of the word must be substituted back after grammar parsing
-    lemmatized = []
-    for word_tokenized_sent in word_tokenized_lower_cased:
-        lemmatized_pos_terminals_sent = []
-        lemmatized_sent = []
-        pos_sent = pos_tag(word_tokenized_sent)
-        for word_pos in pos_sent:
-            lemmatized_word = lemmatizer.lemmatize(word_pos[0], pos_to_wordnet(word_pos[1]))
-            lemmatized_sent.append(lemmatized_word)
-            if lemmatized_word in grammar_keywords:
-                lemmatized_pos_terminals_sent.append(lemmatized_word.lower())
-            else:
-                lemmatized_pos_terminals_sent.append(word_pos[1])
-        lemmatized.append(lemmatized_sent)
-        lemmatized_pos_terminals.append(lemmatized_pos_terminals_sent)
-    return lemmatized_pos_terminals
+    try:
+        lemmatized_pos_terminals = []
+        global lemmatized
+        # the lemmatized are saved because the meaning of the word must be substituted back after grammar parsing
+        lemmatized = []
+        for word_tokenized_sent in word_tokenized_lower_cased:
+            lemmatized_pos_terminals_sent = []
+            lemmatized_sent = []
+            pos_sent = pos_tag(word_tokenized_sent)
+            for word_pos in pos_sent:
+                lemmatized_word = lemmatizer.lemmatize(word_pos[0], pos_to_wordnet(word_pos[1]))
+                lemmatized_sent.append(lemmatized_word)
+                if lemmatized_word in grammar_keywords:
+                    lemmatized_pos_terminals_sent.append(lemmatized_word.lower())
+                else:
+                    lemmatized_pos_terminals_sent.append(word_pos[1])
+            lemmatized.append(lemmatized_sent)
+            lemmatized_pos_terminals.append(lemmatized_pos_terminals_sent)
+        return lemmatized_pos_terminals
+    except MemoryError as e:
+        raise MemoryError(e)
+    except Exception as e:
+        raise exceptions.LemmatizeException
 
 
 def tree_to_dict(tree, current_sentence_index, current_position_in_sentence=0):
@@ -104,12 +118,17 @@ def tree_to_dict(tree, current_sentence_index, current_position_in_sentence=0):
 
 
 def lemmatized_pos_terminals_to_processed_text(lemmatized_pos_terminals):
-    processed_text = []
-    for i in range(0, len(lemmatized_pos_terminals)):
-        processed_sentence_tree = grammar_parser.parse(lemmatized_pos_terminals[i])
-        processed, last_index = tree_to_dict(processed_sentence_tree, i)
-        processed_text.append(processed['sentence'])
-    return processed_text
+    try:
+        processed_text = []
+        for i in range(0, len(lemmatized_pos_terminals)):
+            processed_sentence_tree = grammar_parser.parse(lemmatized_pos_terminals[i])
+            processed, last_index = tree_to_dict(processed_sentence_tree, i)
+            processed_text.append(processed['sentence'])
+        return processed_text
+    except MemoryError as e:
+        raise MemoryError(e)
+    except Exception as e:
+        raise exceptions.GrammarCanNotParseException
 
 
 def processed_text_to_schema(processed_text):
@@ -153,8 +172,12 @@ def trim_schema(schema, original_words):
                         entity_counts[original_name] += 1
                         schema[i]["methods"][j]["parameters"][k]["type"] = original_name
     trimmed_schema = []
+    print(schema)
+    print(entity_counts)
     for entity in schema:
         if entity_counts[entity["name"]] == 0 and len(entity) <= 1:
+            continue
+        if entity_counts[entity["name"]] == 0 and "name" in entity and "accessModifier" in entity and len(entity) == 2:
             continue
         trimmed_schema.append(entity)
     return trimmed_schema

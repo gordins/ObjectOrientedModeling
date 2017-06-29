@@ -1,0 +1,53 @@
+body {
+    background: url("/oomodeling/img/bg.jpg");
+    font-family: Tahoma, Geneva, sans-serif;
+    padding: 0px 0px 0px 0px;
+    z-index:0;
+}
+
+.row-header {
+    margin:0px auto;
+    padding:0px auto;
+}
+
+.row-content {
+    margin:0px auto;
+    padding: 50px 0px 0px 0px;
+    min-height:10px;
+}
+
+.row-footer {
+    margin:0px auto;
+    padding: 100px 0px 20px 0px;
+    width: 100%;
+    bottom: 0;
+    /* position: fixed; */
+}
+
+header {
+    padding: 20px 20px 20px 20px;
+    margin: 0px auto;
+    background: #2ecc71;
+    color: floralwhite;
+}
+
+h1 {
+	font-weight: bold;
+}
+
+h1 a, h1 a:hover, h1 a:visited, h1 a:link, h1 a:active {
+    text-decoration: none;
+    color: #FFF;
+}
+
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+}
+
+.btn, .btn:hover, .btn:active, .btn:visited {
+    background-color: #2ecc71 !important;
+    color: #fff;
+}

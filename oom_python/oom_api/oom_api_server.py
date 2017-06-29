@@ -1,6 +1,10 @@
 import requests
 import json
-from bottle import run, route, request, response
+import os
+
+from bottle import run, route, request, response, static_file
+
+from oom_api import zipper_tools
 
 server_utilities = {}
 error_texts = {}
@@ -54,7 +58,32 @@ def modeling_handler():
         if generator_response.status_code != 200:
             response.status = generator_response.status_code
             return generator_response.text
-    return generator_response.json()
+
+    zipping_input = {
+        "text": received_text,
+        "language": received_language,
+        "entities": generator_response.json()
+    }
+
+    try:
+        zipper_tools.validate(zipping_input)
+    except zipper_tools.BadInputForZipper as bad_input_exception:
+        response.status = 412
+        return bad_input_exception.args
+    try:
+        response.status = 200
+        zip_file_to_return = zipper_tools.return_zip(zipping_input)
+    except Exception as e:
+        print(e)
+        response.status = 500
+        return "There was an unhandled exception during the zip-file-creation."
+
+    return {"entities": generator_response.json(), "zip-uri": zip_file_to_return}
+
+
+@route('/downloading/<filename>')
+def server_static(filename):
+    return static_file(filename, root='./zips/')
 
 
 def main():
@@ -72,7 +101,11 @@ def main():
             or 'text_processor_uri' not in server_utilities \
             or 'required_fields' not in server_utilities:
         print('The server can not start with a invalid server_utilities.json')
-    run(host='localhost', port='2000')
+
+    if not os.path.exists("zips"):
+        os.makedirs("zips")
+
+    run(host='0.0.0.0', port='2000')
 
 
 if __name__ == '__main__':

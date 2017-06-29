@@ -74,7 +74,7 @@ def convert_possessed_description_sentence(possessed_description_sentence):
             possessed_description_sentence["description_type"]["entity"]
         if "numeral_indicator" in possessed_description_sentence["description_type"]:
             entities[entity_index]["variables"][variable_index]["isCollection"] = \
-                possessed_description_sentence["description_type"]["numeral_indicator"] != "a"
+                possessed_description_sentence["description_type"]["numeral_indicator"] == "many"
 
 
 def convert_behav_sentence(behav_sentence):
@@ -96,7 +96,7 @@ def convert_parameter_enumeration(parameter_enumeration, entity_index, method_in
     add_entity(parameter_enumeration["parameter"]["entity"])
     if "numeral_indicator" in parameter_enumeration["parameter"]:
         entities[entity_index]["methods"][method_index]["parameters"][parameter_index]["isCollection"] = \
-            parameter_enumeration["parameter"]["numeral_indicator"] != "a"
+            parameter_enumeration["parameter"]["numeral_indicator"] == "many"
     if "parameter_enumeration" in parameter_enumeration:
         convert_parameter_enumeration(parameter_enumeration["parameter_enumeration"], entity_index, method_index)
 
@@ -125,7 +125,7 @@ def does_element_exist(element_name, elements):
 def add_entity(entity_name):
     entity_index = does_element_exist(entity_name, entities)
     if entity_index == -1:
-        entities.append({"name": entity_name})
+        entities.append({"name": entity_name, "accessModifier": "public"})
         return len(entities) - 1
     return entity_index
 
@@ -138,7 +138,8 @@ def add_variable(entity_index, variable_name):
         entities[entity_index]["variables"] = []
 
     if variable_index == -1:
-        entities[entity_index]["variables"].append({"name": variable_name, "type": variable_name})
+        entities[entity_index]["variables"].append(
+            {"name": variable_name, "type": variable_name, "accessModifier": "public"})
         add_entity(variable_name)
         return len(entities[entity_index]["variables"]) - 1
     return variable_index
@@ -147,12 +148,13 @@ def add_variable(entity_index, variable_name):
 def add_method(entity_index, method_name):
     if "methods" in entities[entity_index]:
         method_index = does_element_exist(method_name, entities[entity_index]["methods"])
+        method_index = -1
     else:
         method_index = -1
         entities[entity_index]["methods"] = []
 
     if method_index == -1:
-        entities[entity_index]["methods"].append({"name": method_name})
+        entities[entity_index]["methods"].append({"name": method_name, "accessModifier": "public"})
         return len(entities[entity_index]["methods"]) - 1
     return method_index
 

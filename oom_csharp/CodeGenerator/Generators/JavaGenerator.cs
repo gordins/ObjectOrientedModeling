@@ -84,7 +84,7 @@ namespace CodeGenerator.Generators
             if (method.IsAbstract || isEntityInterface)
                 generatedMethod.Append(';');
             else
-                generatedMethod.Append(" {\n\t\tthrow new NotImplementedException();\n\t}");
+                generatedMethod.Append(" {\n\t\tthrow new UnsupportedOperationException();\n\t}");
 
             return generatedMethod.ToString();
         }

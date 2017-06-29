@@ -5,15 +5,19 @@ from oom_text_processor.tools import \
     word_tokenized_to_word_tokenized_lower_cased, word_tokenized_lower_cased_to_lemmatized_pos_terminals, \
     lemmatized_pos_terminals_to_processed_text, \
     processed_text_to_schema, trim_schema
+from oom_text_processor.grammar import grammar_parser, grammar_keywords
+import pprint
+from nltk import pos_tag, Tree
 
 
 def process(text):
+    "Bob has a car. Bob's car is a Toyota. Bob can drive."
     """
     :param plain natural text:
     :return processed text:
 
     In here the whole flow is embedded, every processing operation
-    In oom_text_processor/tools.py all the processing operations are defined and explained
+    In oom_text_processor/zipper_tools.py all the processing operations are defined and explained
     """
     # splitting the whole text in sentences, since
     # the idea of the grammar is to be able to process sentences by themselves
@@ -34,5 +38,6 @@ def process(text):
     schema = processed_text_to_schema(processed_text)
     # trim the schema of unused entities and capitalize the first letters of a entity
     trimmed_schema = trim_schema(schema, original_words)
-    # return schema
     return trimmed_schema
+
+
