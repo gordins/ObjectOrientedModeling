@@ -40,7 +40,7 @@ session_start();
 			<div class="col-xs-12 col-sm-10">
 				<p>
 					It seems there has been an error. Please check the input provided and try again. <br>
-					<strong><a href="/oomodeling">< Go back</a></strong>
+					<strong><a href="/oomodeling">Go back</a></strong>
 				</p>
 				<br>
 				<p>
