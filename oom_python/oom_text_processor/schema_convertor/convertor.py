@@ -84,6 +84,8 @@ def convert_behav_sentence(behav_sentence):
         entities[entity_index]["methods"][method_index]["accessModifier"] = "public"
     elif behav_sentence["behav_verb"] == "should" or behav_sentence["behav_verb"] == "may":
         entities[entity_index]["methods"][method_index]["accessModifier"] = "protected"
+    if "abstractly_keyword" in behav_sentence:
+        entities[entity_index]["methods"][method_index]["isAbstract"] = True
     if "private_indicator" in behav_sentence:
         entities[entity_index]["methods"][method_index]["accessModifier"] = "private"
     if "parameter_enumeration" in behav_sentence["behavior"]:
@@ -106,6 +108,7 @@ def convert_singleton_sentence(singleton_sentence):
     variable_index = add_variable(entity_index, singleton_sentence["entity"])
     entities[entity_index]["variables"][variable_index]["name"] = "instance"
     entities[entity_index]["variables"][variable_index]["isStatic"] = True
+    # entities[entity_index]["variables"][variable_index]["isConst"] = True
     entities[entity_index]["variables"][variable_index]["accessModifier"] = "private"
     entities[entity_index]["constructors"] = []
     entities[entity_index]["constructors"].append({"accessModifier": "private"})

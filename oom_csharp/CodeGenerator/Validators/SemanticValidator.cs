@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Model.SchemaModel;
@@ -40,6 +41,28 @@ namespace CodeGenerator.Validators
                         throw new SemanticFlawException("An entity can not inherit from itself. (" + entity.Name + ")");
                     if (!_createdTypes.Contains(entity.Inherits))
                         throw new SemanticFlawException(entity.Inherits + " is not a defined entity.");
+                    var inheritedEntity = processedText.RetriveByName(entity.Inherits);
+                    foreach (var inheritedMethod in inheritedEntity.Methods)
+                    {
+                        if (!inheritedMethod.IsAbstract || inheritedMethod.AccessModifier == "private") continue;
+                        var method = new Method
+                        {
+                            Name = inheritedMethod.Name,
+                            AccessModifier = inheritedMethod.AccessModifier,
+                            IsAbstract = false,
+                            IsReturnCollection = inheritedMethod.IsReturnCollection,
+                            IsSealed = false,
+                            IsStatic = false,
+                            ReturnType = inheritedMethod.ReturnType,
+                            Parameters = inheritedMethod.Parameters.Select(parameter => new Parameter
+                            {
+                                Name = parameter.Name,
+                                IsCollection = parameter.IsCollection,
+                                Type = parameter.Type
+                            }).ToList()
+                        };
+                        entity.Methods.Add(method);
+                    }
                 }
 
                 var variables = new List<string>();

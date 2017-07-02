@@ -15,8 +15,8 @@ description_type -> entity | numeral_indicator entity | constant | static
 
 possessed -> pos_object | numeral_indicator pos_object
 
-behavioral -> entity behav_verb behavior | private_indicator entity behav_verb behavior
-behavior -> behav_object | behav_object involved_indicator parameter_enumeration
+behavioral -> entity behav_verb behavior | private_indicator entity behav_verb behavior | entity behav_verb behavior abstractly_keyword
+behavior -> behav_object | behav_object parameter_enumeration | behav_object involved_indicator parameter_enumeration
 parameter_enumeration -> parameter | parameter enumeration_indicator parameter_enumeration
 parameter -> entity | numeral_indicator entity
 
@@ -44,11 +44,12 @@ ack_verb -> "know"
 
 entity -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ" | "JJR" | "JJS" | "FW" | "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ" | "DT"
 pos_object -> "NN" | "NNS" | "NNP" | "NNPS" | "JJ" | "JJR" | "JJS" | "FW" | "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ" | "DT"
-behav_object -> "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ" | "FW"
+behav_object -> "VB" | "VBG" | "VBD" | "VBN" | "VBP" | "VBZ" | "FW" | abstractly
 
 everyone_keyword -> "everyone"
 one_keyword -> "one"
 abstract_keyword -> "abstract"
+abstractly_keyword -> "abstractly"
 heir_keyword -> "heir"
 there_keyword -> "there"
 

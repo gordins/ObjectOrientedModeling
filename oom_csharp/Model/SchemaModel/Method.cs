@@ -6,6 +6,7 @@ namespace Model.SchemaModel
 {
     public class Method
     {
+
         [NotKeyword]
         [Required]
         [RegularExpression("[_a-zA-Z][_a-zA-Z0-9]*", ErrorMessage = "Invalid method name.")]

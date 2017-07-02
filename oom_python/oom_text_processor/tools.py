@@ -48,7 +48,11 @@ def sent_tokenized_to_no_punctuation(sent_tokenized):
 def no_punctuation_to_word_tokenized(no_punctuation):
     word_tokenized = []
     for no_punctuation_sent in no_punctuation:
-        word_tokenized.append(word_tokenizer(no_punctuation_sent))
+        word_list = word_tokenizer(no_punctuation_sent)
+        if word_list[0].lower() == 'a' or word_list[0].lower() == 'an':
+            word_tokenized.append(word_list[1:])
+        else:
+            word_tokenized.append(word_list)
     return word_tokenized
 
 
@@ -172,8 +176,6 @@ def trim_schema(schema, original_words):
                         entity_counts[original_name] += 1
                         schema[i]["methods"][j]["parameters"][k]["type"] = original_name
     trimmed_schema = []
-    print(schema)
-    print(entity_counts)
     for entity in schema:
         if entity_counts[entity["name"]] == 0 and len(entity) <= 1:
             continue
