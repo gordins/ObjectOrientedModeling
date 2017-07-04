@@ -40,14 +40,15 @@ session_start();
 			<div class="col-xs-12 col-sm-10">
 				<p>
 					It seems there has been an error. Please check the input provided and try again. <br>
-					<strong><a href="/oomodeling">Go back</a></strong>
+					<strong><a href="/oomodeling"> Go back</a></strong>
 				</p>
 				<br>
 				<p>
-					<strong>Error code:</strong>
+					<!-- <strong>Error code:</strong> -->
 					<?php
-						echo $_SESSION['status'];
-					?> <br>
+						// echo $_SESSION['status'];
+					?>
+					<!-- <br> -->
 					<strong>Error message:</strong>
 					<?php
 						echo $_SESSION['error'];
