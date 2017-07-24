@@ -8,3 +8,5 @@ A string has many characters.
 Human is a human.
 
 Calculator has many operations. Operation is abstract. Operation can compute with many numbers abstractly. Sum is an operation. Substract is an operation. Multiply is an operation. Divide is an operation. Only calculator has many inputNumbers. Calculator's inputNumbers are numbers. Calculator can compute. There is only one calculator. A number has a value. Number's value is an int. Calculator can convertInput with an InputString. InputString has a value. InputString's value is a string.
+
+https://www.youtube.com/watch?v=7w_ODvzi6Zk
